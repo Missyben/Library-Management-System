@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg {{ theme }}">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="app">
+        <aside class="side glass">
+            <h2>Lumina</h2>
+            <a href="#dash">Dashboard</a>
+            <a href="#profile">Profile</a>
+            <a href="#books">Books</a>
+            <a href="#add-book">Add Book</a>
+            <a href="#students">Students</a>
+            <a href="#issue">Issue/Return</a>
+            <a href="#fines">Fines</a>
+            <a href="#services">Services</a>
+            <a href="#test">Testimonials</a>
+            <a href="/logout">Logout</a>
+        </aside>
+        <main class="main">
+            <div class="top">
+                <h2>Welcome, {{ session.username }}</h2>
+                <div class="top-actions">
+                    <a class="profile-pill" href="#profile">
+                        <span class="avatar small">{{ profile.initial }}</span>
+                        <span>{{ profile.username }}</span>
+                    </a>
+                    {% if theme == 'dark' %}
+                    <a class="btn" href="/theme/light">Light Theme</a>
+                    {% else %}
+                    <a class="btn" href="/theme/dark">Dark Theme</a>
+                    {% endif %}
+                    <a class="btn" href="/logout">Logout</a>
+                </div>
+            </div>
+
+            <section id="dash" class="view-section dashboard-view">
+                <div class="hero">
+                    <p>Modern Library SaaS Dashboard</p>
+                    <h1>Manage books, students, returns and fines beautifully.</h1>
+                    <p class="muted">SQLite powered, Flask rendered, responsive layout</p>
+                    <a class="btn" href="#books">Explore Books</a>
+                </div>
+
+                <div class="grid stats">
+                    {% for label,val in [('Total Books',stats.total_books),('Issued',stats.issued_books),('Available',stats.available_books),('Students',stats.students),('Fine Rs',stats.total_fine),('Overdue',stats.overdue)] %}
+                    <div class="card"><span class="muted">{{ label }}</span><strong class="counter">{{ val }}</strong></div>
+                    {% endfor %}
+                </div>
+
+                <div class="grid two">
+                    <div class="panel">
+                        <h2>Charts</h2>
+                        <div class="chart">
+                            {% for item in charts %}
+                            <div class="bar-row">
+                                <span>{{ item.label }}</span>
+                                <progress class="bar-track" max="100" value="{{ item.width }}">{{ item.width }}%</progress>
+                                <strong>{{ item.value }}</strong>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="panel"><h2>Notifications</h2><p>New arrivals added</p><p>{{ stats.overdue }} overdue books</p><p>Rs {{ stats.total_fine }} unpaid fine</p></div>
+                </div>
+            </section>
+
+            <section id="profile" class="view-section panel profile-panel">
+                <div class="avatar">{{ profile.initial }}</div>
+                <div>
+                    <h2>{{ profile.username }}</h2>
+                    <p class="muted">Personal Details</p>
+                    <div class="detail-grid">
+                        <p><strong>Username</strong><span>{{ profile.username }}</span></p>
+                        <p><strong>Role</strong><span>{{ profile.role }}</span></p>
+                        <p><strong>Status</strong><span>Active</span></p>
+                        <p><strong>Library Access</strong><span>Dashboard, books, students and fines</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="books" class="view-section panel">
+                <h2>Featured Books</h2>
+                <form class="search-form" action="/#books" method="get">
+                    <input name="search" value="{{ search }}" placeholder="Search books...">
+                    <button>Search</button>
+                    {% if search %}<a class="btn mini" href="/#books">Clear</a>{% endif %}
+                </form>
+                <div class="grid books">
+                    {% for b in books %}
+                    <div class="book card">
+                        <img src="{{ b.image }}" alt="{{ b.name }}">
+                        <h3>{{ b.name }}</h3>
+                        <p class="muted">{{ b.author }} | {{ b.category }}</p>
+                        <p>Rating {{ b.rating }} <span class="badge">{{ b.quantity }} available</span></p>
+                        <details>
+                            <summary class="btn mini">Details</summary>
+                            <p>{{ b.description }}</p>
+                        </details>
+                        <a class="btn mini danger" href="/delete/{{ b.id }}">Delete</a>
+                    </div>
+                    {% else %}
+                    <p class="muted">No books found.</p>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section id="add-book" class="view-section panel">
+                <h2>Add Book</h2>
+                <form class="grid two" action="/add" method="post">
+                    <input name="id" placeholder="Book ID" required>
+                    <input name="name" placeholder="Book Name" required>
+                    <input name="author" placeholder="Author" required>
+                    <input name="category" placeholder="Category" required>
+                    <textarea name="description" placeholder="Description"></textarea>
+                    <input name="quantity" type="number" placeholder="Quantity" required>
+                    <input name="image" placeholder="Cover image URL">
+                    <button>Add Book</button>
+                </form>
+            </section>
+
+            <section id="students" class="view-section panel">
+                <h2>Student Management</h2>
+                <form class="grid two" action="/student/add" method="post">
+                    <input name="name" placeholder="Name" required>
+                    <input name="roll" placeholder="Roll Number" required>
+                    <input name="department" placeholder="Department" required>
+                    <input name="phone" placeholder="Phone" required>
+                    <input name="email" placeholder="Email" required>
+                    <button>Add Student</button>
+                </form>
+                <div class="grid three">
+                    {% for s in students %}
+                    <div class="card"><h3>{{ s.name }}</h3><p class="muted">{{ s.roll }} | {{ s.department }}</p><p>{{ s.email }}</p><a class="btn mini danger" href="/student/delete/{{ s.id }}">Delete</a></div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section id="issue" class="view-section panel">
+                <h2>Issue & Return</h2>
+                <form class="grid two" action="/issue" method="post">
+                    <select name="book_id">{% for b in books %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}</select>
+                    <select name="student_id">{% for s in students %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select>
+                    <input name="issue_date" type="date" required>
+                    <input name="due_date" type="date" required>
+                    <button>Issue Book</button>
+                </form>
+                <table><tr><th>Book</th><th>Student</th><th>Due</th><th>Status</th><th>Action</th></tr>
+                    {% for i in issued %}
+                    <tr><td>{{ i.book_name }}</td><td>{{ i.student_name }}</td><td>{{ i.due_date }}</td><td>{{ i.status }}</td><td>{% if i.status == 'Issued' %}<a class="btn mini" href="/return/{{ i.id }}">Return</a>{% endif %}</td></tr>
+                    {% endfor %}
+                </table>
+            </section>
+
+            <section id="fines" class="view-section panel">
+                <h2>Fine Management</h2>
+                <table><tr><th>Student</th><th>Book</th><th>Late</th><th>Amount</th><th>Status</th></tr>
+                    {% for f in fines %}
+                    <tr><td>{{ f.student_name }}</td><td>{{ f.book_name }}</td><td>{{ f.late_days }}</td><td>Rs {{ f.amount }}</td><td>{% if f.status == 'Unpaid' %}<a class="btn mini" href="/fine/paid/{{ f.id }}">Mark Paid</a>{% else %}Paid{% endif %}</td></tr>
+                    {% endfor %}
+                </table>
+            </section>
+
+            <section id="services" class="view-section grid three">
+                <div class="card service s1"><h3>Digital Library</h3></div>
+                <div class="card service s2"><h3>Reading Rooms</h3></div>
+                <div class="card service s3"><h3>Research Support</h3></div>
+            </section>
+
+            <section id="test" class="view-section grid three"><div class="card"><p>Beautiful and easy to use.</p><b>Priya, ECE</b></div><div class="card"><p>Fast issue and return workflow.</p><b>Aarav, CSE</b></div><div class="card"><p>Looks like a premium dashboard.</p><b>Neha, IT</b></div></section>
+        </main>
+    </div>
+</body>
+</html>

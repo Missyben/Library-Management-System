@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Lumina Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="login">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <form class="login-card glass" method="post">
+        <div class="logo">Library</div>
+        <h1>Lumina Library</h1>
+        <p class="muted">Premium animated library management platform</p>
+        {% if error %}<p class="err">{{ error }}</p>{% endif %}
+        <label>Username</label>
+        <input name="username" placeholder="admin" required>
+        <label>Password</label>
+        <input id="pass" name="password" type="password" placeholder="admin123" required>
+        <label>Role</label>
+        <select name="role">
+            <option>Admin</option>
+            <option>Librarian</option>
+            <option>Student</option>
+        </select>
+        <label><input class="check" type="checkbox"> Remember me</label>
+        <button>Login</button>
+        <div class="auth-links">
+            <a href="/register">Create account</a>
+            <a href="/forgot-password">Forgot password?</a>
+        </div>
+        <p class="muted">Default: admin / admin123 / Admin</p>
+    </form>
+</body>
+</html>
