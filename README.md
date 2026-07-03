@@ -1,22 +1,47 @@
-# Library-Management-System
+# 📚 Library Management System
 
-## Overview
-This repository is intended for a Library Management System project developed to practice Python programming and basic software development concepts.
+A simple Library Management System developed using Python to manage library operations efficiently.
 
-## Planned Features
+## Features
+
 - Add new books
+- View all books
 - Search books
-- Issue and return books
-- Update book details
-- Delete book records
+- Issue books
+- Return books
+- Store book records using file handling
 
-## Technologies
+## Technologies Used
+
 - Python
+- File Handling
+- Object-Oriented Programming (OOP)
 
-## Status
-🚧 This project is currently being recreated. The source code will be added soon.
+## Concepts Used
 
-## Learning Objectives
-- Improve Python programming skills
-- Understand file handling and data management
-- Build a simple console-based application
+- Classes and Objects
+- Functions
+- Loops
+- Conditional Statements
+- Exception Handling
+- File I/O
+
+## How to Run
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/Library-Management-System.git
+```
+
+2. Open the project folder
+
+3. Run
+
+```bash
+python library.py
+```
+
+## Author
+
+Kalaiarasi K
